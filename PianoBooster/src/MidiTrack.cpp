@@ -189,7 +189,6 @@ void CMidiTrack::readTimeSignatureEvent()
     byte_t timeSigNumerator;
     byte_t timeSigDenominator;
     CMidiEvent event;
-    byte_t b3, b4;
 
     len = readVarLen();
     if (len!=4)
@@ -211,8 +210,8 @@ void CMidiTrack::readTimeSignatureEvent()
     }
     len = (1<<timeSigDenominator);
 
-    b3 = readByte();           /* Ignore the last bytes */
-    b4 = readByte();           /* Ignore the last bytes */
+    readByte();           /* Ignore the last bytes */
+    readByte();           /* Ignore the last bytes */
     event.metaEvent(readDelaTime(), MIDI_PB_timeSignature, timeSigNumerator, 1<<timeSigDenominator);
     m_trackEventQueue->push(event);
     ppDEBUG_TRACK((4,"Key Signature %d/%d metronome %d quarter %d", timeSigNumerator, 1<<timeSigDenominator, b3, b4));
@@ -252,7 +251,6 @@ void CMidiTrack::readKeySignatureEvent()
 void CMidiTrack::readMetaEvent(byte_t type)
 {
     string text;
-    dword_t data;
 
     if (failed() == true)
         return;
@@ -262,8 +260,7 @@ void CMidiTrack::readMetaEvent(byte_t type)
     switch (type)
     {
     case METASEQN:                     /* Sequence Number */
-        data = readDataEvent(2);
-        ppDEBUG_TRACK((3,"Sequence Number %lu", data));
+        ppDEBUG_TRACK((3,"Sequence Number %lu", readDataEvent(2)));
         break;
 
     case METACOPYR:                             /* Copyright Notice */
@@ -337,8 +334,7 @@ void CMidiTrack::readMetaEvent(byte_t type)
         break;
 
     case METACHANPFX:                         /* Midi Channel Prefix */
-        data = readDataEvent(1);
-        ppDEBUG_TRACK((2,"MIDI Channel Prefix %lu", data));
+        ppDEBUG_TRACK((2,"MIDI Channel Prefix %lu", readDataEvent(1)));
         break;
 
     case METASMPTEOFF:                        /* SMPTE Offset */
@@ -352,8 +348,7 @@ void CMidiTrack::readMetaEvent(byte_t type)
         break;
 
     case 0x21:                         /* MIDI Port */
-        data = readDataEvent(1);
-        ppDEBUG_TRACK((2,"MIDI Port %lu", data));
+        ppDEBUG_TRACK((2,"MIDI Port %lu", readDataEvent(1)));
         break;
 
     case 0x09:                          // meta type
