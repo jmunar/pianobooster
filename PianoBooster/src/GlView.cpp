@@ -310,40 +310,18 @@ void CGLView::mouseMoveEvent(QMouseEvent *event)
 
 void CGLView::initializeGL()
 {
+    // Buffer clear color
     CColour colour = Cfg::backgroundColour();
     glClearColor (colour.red, colour.green, colour.blue, 0.0);
-    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-    glShadeModel (GL_FLAT);
-    //glEnable(GL_TEXTURE_2D);                        // Enable Texture Mapping
-
-
-    //from initCheck();
-    glShadeModel(GL_FLAT);
-    //glEnable(GL_DEPTH_TEST);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    //glGenTextures(1, &texName);
-    //glBindTexture(GL_TEXTURE_2D, texName);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    //enableAntialiasedLines();
-
-    m_timeSigFont =  QFont("Arial", 22 );
-    m_timeRatingFont =  QFont("Arial", 12 );
-
-    Cfg::setStaveEndX(400);        //This value get changed by the resizeGL func
+    
+    // Fonts used to write in the GL window
+    m_timeSigFont    = QFont("Arial", 22 );
+    m_timeRatingFont = QFont("Arial", 12 );
+    
+    //This value get changed by the resizeGL func
+    Cfg::setStaveEndX(400);
 
     m_song->setActiveHand(PB_PART_both);
-
-    if (!Cfg::quickStart)
-    {
-        renderText(10,10,QString("~"), m_timeRatingFont); //fixme this is a work around for a QT bug.
-        renderText(10,10,QString("~"), m_timeSigFont); //this is a work around for a QT bug.
-    }
 
     setFocusPolicy(Qt::ClickFocus);
     m_qtWindow->init();
@@ -351,15 +329,11 @@ void CGLView::initializeGL()
     m_score->init();
 
     m_song->regenerateChordQueue();
-
-
+    
     // increased the tick time for Midi handling
-
     m_timer.start(Cfg::tickRate, this );
-
     m_realtime.start();
-
-    //startMediaTimer(12, this );
+    
 }
 
 void CGLView::updateMidiTask()
