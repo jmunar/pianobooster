@@ -177,7 +177,7 @@ int CTrackList::findFreeChannel(int startChannel)
     int chan;
     for (chan = startChannel; chan < MAX_MIDI_CHANNELS; chan++)
     {
-        if (chan == Cfg::keyboardLightsChan)
+        if (chan == Cfg.play_channelkbdlights)
             continue;
         if (chan == MIDI_DRUM_CHANNEL)
             continue;
@@ -235,8 +235,8 @@ void CTrackList::refresh()
     }
     m_song->setPianistChannels(goodChan,badChan);
     ppLogInfo("Using Pianist Channels %d + %d", goodChan +1, badChan +1);
-    if (Cfg::keyboardLightsChan != -1 && spareChan != -1)
-        m_song->mapTrack2Channel(Cfg::keyboardLightsChan,  spareChan);
+    if (Cfg.play_channelkbdlights != -1 && spareChan != -1)
+        m_song->mapTrack2Channel(Cfg.play_channelkbdlights,  spareChan);
 }
 
 int CTrackList::getActiveItemIndex()

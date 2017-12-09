@@ -48,9 +48,9 @@ static void openLogFile() {
     if (logsOpened == true)
         return;
 
-    if (Cfg::useLogFile)
+    if (Cfg.log_usefile)
     {
-        logInfoFile = fopen ("pb.log","w");
+        logInfoFile = fopen (Cfg.log_file.c_str(),"w");
         logErrorFile = logInfoFile;
         if (logErrorFile == 0)
         {
@@ -105,7 +105,7 @@ void fatal(const char *msg, ...)
 void ppLog(logLevel_t level, const char *msg, ...)
 {
     va_list ap;
-    if (Cfg::logLevel  < level)
+    if (Cfg.log_level  < level)
         return;
 
     openLogFile();
@@ -121,7 +121,7 @@ void ppLogInfo(const char *msg, ...)
     va_list ap;
 
     //fixme should call ppLog
-    if (Cfg::logLevel  <  1)
+    if (Cfg.log_level  <  1)
         return;
 
     openLogFile();
@@ -138,7 +138,7 @@ void ppLogWarn(const char *msg, ...)
 {
     va_list ap;
 
-    if (Cfg::logLevel  <  2)
+    if (Cfg.log_level  <  2)
         return;
 
     openLogFile();
@@ -170,7 +170,7 @@ void ppLogDebug( const char *msg, ...)
 {
     va_list ap;
 
-    if (Cfg::logLevel  <  2)
+    if (Cfg.log_level  <  2)
         return;
 
     openLogFile();

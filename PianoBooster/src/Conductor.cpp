@@ -325,12 +325,12 @@ void CConductor::setActiveHand(whichPart_t hand)
     for(i = 0; i < m_savedWantedChord.length(); i++)
     {
         note = m_savedWantedChord.getNote(i).pitch();
-        m_scoreWin->setPlayedNoteColour(note, Cfg::noteColour(), m_chordDeltaTime);
+        m_scoreWin->setPlayedNoteColour(note, Cfg.note_color, m_chordDeltaTime);
     }
     for(i = 0; i < m_wantedChord.length(); i++)
     {
         note = m_wantedChord.getNote(i).pitch();
-        m_scoreWin->setPlayedNoteColour(note, Cfg::playedStoppedColour(), m_chordDeltaTime);
+        m_scoreWin->setPlayedNoteColour(note, Cfg.note_unplayed_color, m_chordDeltaTime);
     }
     findSplitPoint();
     forceScoreRedraw();
@@ -536,16 +536,16 @@ void CConductor::turnOnKeyboardLights(bool on)
     CMidiEvent event;
 
     // exit if not enable
-    if (Cfg::keyboardLightsChan == -1)
+    if (Cfg.play_channelkbdlights == -1)
         return;
 
     for(i = 0; i < m_wantedChord.length(); i++)
     {
         note = m_wantedChord.getNote(i).pitch();
         if (on == true)
-            event.noteOnEvent(0, Cfg::keyboardLightsChan, note, 1);
+            event.noteOnEvent(0, Cfg.play_channelkbdlights, note, 1);
         else
-            event.noteOffEvent(0, Cfg::keyboardLightsChan, note, 1);
+            event.noteOffEvent(0, Cfg.play_channelkbdlights, note, 1);
        playMidiEvent( event ); // don't use the track  settings
     }
 }
@@ -715,7 +715,7 @@ void CConductor::pianistInput(CMidiEvent inputNote)
             else
                 pianistTiming = NOT_USED;
             m_scoreWin->setPlayedNoteColour(inputNote.note(),
-                        (!m_followPlayingTimeOut)? Cfg::playedGoodColour():Cfg::playedBadColour(),
+                        (!m_followPlayingTimeOut)? Cfg.note_good_color:Cfg.note_bad_color,
                         m_chordDeltaTime, pianistTiming);
 
             if (validatePianistChord() == true)
@@ -757,7 +757,7 @@ void CConductor::pianistInput(CMidiEvent inputNote)
 
         if (hasNote)
             m_scoreWin->setPlayedNoteColour(inputNote.note(),
-                    (!m_followPlayingTimeOut)? Cfg::noteColour():Cfg::playedStoppedColour(),
+                    (!m_followPlayingTimeOut)? Cfg.note_color:Cfg.note_unplayed_color,
                     m_chordDeltaTime);
 
         outputSavedNotesOff();
@@ -863,7 +863,7 @@ void CConductor::followPlaying()
     {
         if (m_chordDeltaTime > m_cfg_playZoneLate )
         {
-            missedNotesColour(Cfg::playedStoppedColour());
+            missedNotesColour(Cfg.note_unplayed_color);
             fetchNextChord();
             m_rating.lateNotes(m_wantedChord.length() - m_goodPlayedNotes.length());
             setEventBits( EVENT_BITS_forceRatingRedraw);
@@ -951,12 +951,12 @@ void CConductor::realTimeEngine(int mSecTicks)
                 m_rating.lateNotes(m_wantedChord.length() - m_goodPlayedNotes.length());
                 setEventBits( EVENT_BITS_forceRatingRedraw);
 
-                missedNotesColour(Cfg::playedStoppedColour());
+                missedNotesColour(Cfg.note_unplayed_color);
                 findImminentNotesOff();
                 // Don't keep any saved notes off if there are no notes down
                 if (m_piano->pianistAllNotesDown() == 0)
                     outputSavedNotesOff();
-                m_silenceTimeOut = Cfg::silenceTimeOut();
+                m_silenceTimeOut = Cfg.app_silencetimeout;
             }
         }
         return;
@@ -1093,8 +1093,8 @@ void CConductor::rewind()
 
     // Annie song 25
 
-    m_cfg_playZoneEarly = CMidiFile::ppqnAdjust(Cfg::playZoneEarly()) * SPEED_ADJUST_FACTOR; // when playing along
-    m_cfg_playZoneLate = CMidiFile::ppqnAdjust(Cfg::playZoneLate()) * SPEED_ADJUST_FACTOR;
+    m_cfg_playZoneEarly = CMidiFile::ppqnAdjust(Cfg.playrect_wprev) * SPEED_ADJUST_FACTOR; // when playing along
+    m_cfg_playZoneLate = CMidiFile::ppqnAdjust(Cfg.playrect_wpast) * SPEED_ADJUST_FACTOR;
 }
 
 void CConductor::init2(CScore * scoreWin, CSettings* settings)

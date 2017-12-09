@@ -73,8 +73,8 @@ void CScore::drawScroll(bool refresh)
     {
         float topY = CStavePos(PB_PART_right, MAX_STAVE_INDEX).getPosY();
         float bottomY = CStavePos(PB_PART_left, MIN_STAVE_INDEX).getPosY();
-        drColour (Cfg::backgroundColour());
-        glRectf(Cfg::scrollStartX(), topY, Cfg::getAppWidth(), bottomY);
+        drColour (Cfg.playarea_bg_color);
+        glRectf(Cfg.marker_scroll, topY, Cfg.app_pos_w, bottomY);
     }
 
     if (m_stavesDisplayListId == 0)
@@ -84,8 +84,8 @@ void CScore::drawScroll(bool refresh)
     {
 
         glNewList (m_stavesDisplayListId, GL_COMPILE_AND_EXECUTE);
-            drawSymbol(CSymbol(PB_SYMBOL_playingZone,  CStavePos(PB_PART_both, 0)), Cfg::playZoneX());
-            drawStaves(Cfg::scrollStartX(), Cfg::staveEndX());
+            drawSymbol(CSymbol(PB_SYMBOL_playingZone,  CStavePos(PB_PART_both, 0)), Cfg.play_rect);
+            drawStaves(Cfg.marker_scroll, Cfg.app_pos_w - Cfg.stave_gap_right);
         glEndList ();
                 // decrement the compile count until is reaches zero
         forceCompileRedraw(0);
@@ -106,12 +106,12 @@ void CScore::drawScore()
             m_scoreDisplayListId = glGenLists (1);
 
         glNewList (m_scoreDisplayListId, GL_COMPILE_AND_EXECUTE);
-            drColour (Cfg::staveColour());
+            drColour (Cfg.stave_color);
 
-            drawSymbol(CSymbol(PB_SYMBOL_gClef, CStavePos(PB_PART_right, -1)), Cfg::clefX()); // The Treble Clef
-            drawSymbol(CSymbol(PB_SYMBOL_fClef, CStavePos(PB_PART_left, 1)), Cfg::clefX());
+            drawSymbol(CSymbol(PB_SYMBOL_gClef, CStavePos(PB_PART_right, -1)), Cfg.marker_clef); // The Treble Clef
+            drawSymbol(CSymbol(PB_SYMBOL_fClef, CStavePos(PB_PART_left, 1)), Cfg.marker_clef);
             drawKeySignature(CStavePos::getKeySignature());
-            drawStaves(Cfg::staveStartX(), Cfg::scrollStartX());
+            drawStaves(Cfg.stave_gap_left, Cfg.marker_scroll);
         glEndList ();
     }
     else

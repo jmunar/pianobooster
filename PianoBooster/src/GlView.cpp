@@ -123,7 +123,7 @@ void CGLView::paintGL()
 
 void CGLView::drawTimeSignature()
 {
-    if (Cfg::quickStart)
+    if (Cfg.app_quickstart)
         return;
 
     if (m_forcefullRedraw == 0)
@@ -141,16 +141,16 @@ void CGLView::drawTimeSignature()
     sprintf(bufferTop, "%d", topNumber);
     sprintf(bufferBottom, "%d", bottomNumber);
 
-    x = Cfg::timeSignatureX();
+    x = Cfg.marker_timesign;
 
-    CDraw::drColour ((CDraw::getDisplayHand() != PB_PART_left) ? Cfg::noteColour() : Cfg::noteColourDim());
+    CDraw::drColour ((CDraw::getDisplayHand() != PB_PART_left) ? Cfg.note_color : Cfg.note_colordim);
 
     y = CStavePos(PB_PART_right,  0).getPosY() + 5;
     renderText(x,y, 0, bufferTop, m_timeSigFont);
     y = CStavePos(PB_PART_right, -3).getPosY() - 2;
     renderText(x,y, 0, bufferBottom, m_timeSigFont);
 
-    CDraw::drColour ((CDraw::getDisplayHand() != PB_PART_right) ? Cfg::noteColour() : Cfg::noteColourDim());
+    CDraw::drColour ((CDraw::getDisplayHand() != PB_PART_right) ? Cfg.note_color : Cfg.note_colordim);
 
     y = CStavePos(PB_PART_left,   0).getPosY() + 5;
     renderText(x,y, 0, bufferTop, m_timeSigFont);
@@ -171,7 +171,7 @@ void CGLView::drawAccurracyBar()
     float accuracy;
     CColour colour;
 
-    float y = Cfg::getAppHeight() - 14;
+    float y = Cfg.app_pos_h - 14;
     const float x = 120;
     const int width = 360;
     const int lineWidth = 8/2;
@@ -182,7 +182,7 @@ void CGLView::drawAccurracyBar()
     colour = m_rating->getAccuracyColour();
     CDraw::drColour (colour);
     glRectf(x, y - lineWidth, x + width * accuracy, y + lineWidth);
-    CDraw::drColour (Cfg::backgroundColour());
+    CDraw::drColour (Cfg.playarea_bg_color);
     glRectf(x + width * accuracy, y - lineWidth, x + width, y + lineWidth);
 
 
@@ -204,13 +204,13 @@ void CGLView::drawDisplayText()
         return; // don't run this func the first time it is called
     }
 
-    if (Cfg::quickStart)
+    if (Cfg.app_quickstart)
         return;
 
     if (m_forcefullRedraw == 0)
         return;
 
-    int y = Cfg::getAppHeight() - 14;
+    int y = Cfg.app_pos_h - 14;
 
     if (!m_settings->getWarningMessage().isEmpty())
     {
@@ -227,7 +227,7 @@ void CGLView::drawDisplayText()
     if (m_titleHeight < 45 )
         return;
 
-    y = Cfg::getAppHeight() - m_titleHeight;
+    y = Cfg.app_pos_h - m_titleHeight;
 
     renderText(30, y+6, 0,tr("Song: ") + m_song->getSongTitle(), m_timeRatingFont);
     /*
@@ -241,15 +241,15 @@ void CGLView::drawDisplayText()
 
 void CGLView::drawBarNumber()
 {
-    if (m_forceBarRedraw == 0 || Cfg::quickStart)
+    if (m_forceBarRedraw == 0 || Cfg.app_quickstart)
         return;
     m_forceBarRedraw--;
 
-    float y = Cfg::getAppHeight() - m_titleHeight - 34;
+    float y = Cfg.app_pos_h - m_titleHeight - 34;
     float x = 30;
 
-    //CDraw::drColour (Cfg::backgroundColour());
-    //CDraw::drColour (Cfg::noteColourDim());
+    //CDraw::drColour (Cfg.playarea_bg_color());
+    //CDraw::drColour (Cfg.note_color);
     //glRectf(x+30+10, y-2, x + 80, y + 16);
     glColor3f(1.0,1.0,1.0);
     renderText(x, y, 0, tr("Bar: ") + QString::number(m_song->getBarNumber()), m_timeRatingFont);
@@ -258,7 +258,6 @@ void CGLView::drawBarNumber()
 void CGLView::resizeGL(int width, int height)
 {
     const int maxSoreWidth = 1024;
-    const int staveEndGap = 20;
     const int heightAboveStave =  static_cast<int>(CStavePos::verticalNoteSpacing() * MAX_STAVE_INDEX);
     const int heightBelowStave =  static_cast<int>(CStavePos::verticalNoteSpacing() * - MIN_STAVE_INDEX);
     const int minTitleHeight = 20;
@@ -294,8 +293,7 @@ void CGLView::resizeGL(int width, int height)
     glOrtho(0, sizeX, 0, sizeY, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     CStavePos::setStaveCenterY(sizeY - maxSoreHeight/2 - m_titleHeight/2);
-    Cfg::setAppDimentions(x, y, sizeX, sizeY);
-    Cfg::setStaveEndX(sizeX - staveEndGap);
+    Cfg.setAppDimensions(x, y, sizeX, sizeY);
     CStavePos::setStaveCentralOffset(staveGap/2);
     CDraw::forceCompileRedraw();
 }
@@ -311,15 +309,12 @@ void CGLView::mouseMoveEvent(QMouseEvent *event)
 void CGLView::initializeGL()
 {
     // Buffer clear color
-    CColour colour = Cfg::backgroundColour();
+    CColour colour = Cfg.playarea_bg_color;
     glClearColor (colour.red, colour.green, colour.blue, 0.0);
     
     // Fonts used to write in the GL window
     m_timeSigFont    = QFont("Arial", 22 );
     m_timeRatingFont = QFont("Arial", 12 );
-    
-    //This value get changed by the resizeGL func
-    Cfg::setStaveEndX(400);
 
     m_song->setActiveHand(PB_PART_both);
 
@@ -330,8 +325,7 @@ void CGLView::initializeGL()
 
     m_song->regenerateChordQueue();
     
-    // increased the tick time for Midi handling
-    m_timer.start(Cfg::tickRate, this );
+    m_timer.start(Cfg.app_tickrate, this );
     m_realtime.start();
     
 }

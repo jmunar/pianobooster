@@ -98,7 +98,7 @@ void CPiano::drawPianoInputNoteNames()
 
     for (i = 0; i < m_noteNameListLength; i++)
     {
-        drawNoteName(m_noteNameList[i].pitch, Cfg::playZoneX() - PIANO_LINE_LENGTH_SHORT - 14, m_noteNameList[i].posY, m_noteNameList[i].type);
+        drawNoteName(m_noteNameList[i].pitch, Cfg.play_rect - PIANO_LINE_LENGTH_SHORT - 14, m_noteNameList[i].posY, m_noteNameList[i].type);
     }
 }
 
@@ -130,7 +130,7 @@ void CPiano::drawPianoInputLines(CChord* chord, CColour colour, int lineLength)
             float posY;
             posY = stavePos.getPosYAccidental();
 
-            oneLine(Cfg::playZoneX() - lineLength, posY, Cfg::playZoneX(), posY);
+            oneLine(Cfg.play_rect - lineLength, posY, Cfg.play_rect, posY);
             glDisable (GL_LINE_STIPPLE);
         }
         else
@@ -140,7 +140,7 @@ void CPiano::drawPianoInputLines(CChord* chord, CColour colour, int lineLength)
             CStavePos top = CStavePos(hand, 6);
             CStavePos bottom = CStavePos(hand, -6);
             glLineWidth (3.0);
-            oneLine(Cfg::playZoneX(), top.getPosY(), Cfg::playZoneX(), bottom.getPosY());
+            oneLine(Cfg.play_rect, top.getPosY(), Cfg.play_rect, bottom.getPosY());
         }
     }
 }
@@ -295,10 +295,10 @@ void CPiano::drawPianoInput()
     int lineLength = (showNoteName) ? PIANO_LINE_LENGTH_SHORT : PIANO_LINE_LENGTH_LONG;
 
     if (m_goodChord.length() > 0)
-        drawPianoInputLines(&m_goodChord, Cfg::pianoGoodColour(), lineLength);
+        drawPianoInputLines(&m_goodChord, Cfg.piano_good_color, lineLength);
 
     if (m_badChord.length() > 0)
-        drawPianoInputLines(&m_badChord, Cfg::pianoBadColour(), lineLength);
+        drawPianoInputLines(&m_badChord, Cfg.piano_bad_color, lineLength);
 
     if (showNoteName)
         drawPianoInputNoteNames();

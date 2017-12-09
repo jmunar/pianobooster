@@ -61,9 +61,9 @@ void GuiKeyboardSetupDialog::init(CSong* song, CSettings* settings)
         i++;
     }
 
-    int program = m_settings->value("Keyboard/RightSound", Cfg::defaultRightPatch()).toInt();
+    int program = m_settings->value("Keyboard/RightSound", Cfg.defaultRightPatch()).toInt();
     rightSoundCombo->setCurrentIndex(program);
-    program = m_settings->value("Keyboard/WrongSound", Cfg::defaultWrongPatch()).toInt();
+    program = m_settings->value("Keyboard/WrongSound", Cfg.defaultWrongPatch()).toInt();
     wrongSoundCombo->setCurrentIndex(program);
     int lowestNote = m_settings->value("Keyboard/LowestNote", "0").toInt();
     int highestNote = m_settings->value("Keyboard/HighestNote", "127").toInt();
@@ -158,8 +158,8 @@ void GuiKeyboardSetupDialog::accept()
 void GuiKeyboardSetupDialog::reject()
 {
     m_song->testWrongNoteSound(false);
-    m_song->setPianoSoundPatches(m_settings->value("Keyboard/RightSound", Cfg::defaultRightPatch()).toInt() - 1,
-                                 m_settings->value("Keyboard/WrongSound", Cfg::defaultWrongPatch()).toInt() - 1, true);
+    m_song->setPianoSoundPatches(m_settings->value("Keyboard/RightSound", Cfg.defaultRightPatch()).toInt() - 1,
+                                 m_settings->value("Keyboard/WrongSound", Cfg.defaultWrongPatch()).toInt() - 1, true);
 
     this->QDialog::reject();
 }

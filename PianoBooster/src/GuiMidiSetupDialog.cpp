@@ -169,7 +169,7 @@ void GuiMidiSetupDialog::accept()
     {
         if( m_latencyFix> 0)
         {
-            int rightSound = m_settings->value("Keyboard/RightSound", Cfg::defaultRightPatch()).toInt();
+            int rightSound = m_settings->value("Keyboard/RightSound", Cfg.defaultRightPatch()).toInt();
             m_settings->setValue("Keyboard/RightSoundPrevious", rightSound); // Save the current right sound
             // Mute the Piano if we are using the latency fix;
             m_settings->setValue("Keyboard/RightSound", 0);
@@ -177,7 +177,7 @@ void GuiMidiSetupDialog::accept()
         }
         else
         {
-            int previousRightSound = m_settings->value("Keyboard/RightSoundPrevious", Cfg::defaultRightPatch()).toInt();
+            int previousRightSound = m_settings->value("Keyboard/RightSoundPrevious", Cfg.defaultRightPatch()).toInt();
             m_settings->setValue("Keyboard/RightSound", previousRightSound);
             m_song->setPianoSoundPatches(previousRightSound, -2); // -2 means ignore this parameter
         }

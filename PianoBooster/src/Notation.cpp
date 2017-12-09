@@ -215,7 +215,7 @@ void CNotation::setupNotationParamaters()
 
 void CNotation::calculateScoreNoteLength()
 {
-    if (!Cfg::experimentalNoteLength)
+    if (!Cfg.experimentalNoteLength)
         return;
 
     CSlot* slot = m_slotQueue->indexPtr(0);
@@ -290,7 +290,7 @@ void CNotation::findNoteSlots()
                 else
                     symbolType = PB_SYMBOL_noteHead;
                 CSymbol symbol(symbolType, hand, midi.note());
-                symbol.setColour(Cfg::noteColour());
+                symbol.setColour(Cfg.note_color);
                 symbol.setMidiDuration(midi.getDuration());
 
                 // check if this note has occurred in this bar before

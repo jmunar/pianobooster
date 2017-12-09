@@ -91,7 +91,7 @@ public:
         init();
     }
 
-    CSymbol(musicalSymbol_t type,  CStavePos stavePos, CColour colour = Cfg::noteColour())
+    CSymbol(musicalSymbol_t type,  CStavePos stavePos, CColour colour = Cfg.note_color)
     {
         init();
         m_symbolType = type;

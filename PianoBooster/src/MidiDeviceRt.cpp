@@ -224,7 +224,7 @@ CMidiEvent CMidiDeviceRt::readMidiInput()
     unsigned int channel;
 
 
-    if (Cfg::midiInputDump)
+    if (Cfg.log_mididump)
     {
         QString str;
 

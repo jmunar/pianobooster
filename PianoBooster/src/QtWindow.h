@@ -119,7 +119,7 @@ private slots:
 
     void enableFollowTempo()
     {
-        CTempo::enableFollowTempo(Cfg::experimentalTempo);
+        CTempo::enableFollowTempo(Cfg.experimentalTempo);
     }
     void disableFollowTempo()
     {

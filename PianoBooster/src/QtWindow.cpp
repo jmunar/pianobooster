@@ -66,15 +66,15 @@ QtWindow::QtWindow()
     m_settings = new CSettings(this);
     setWindowIcon(QIcon(":/images/Logo32x32.png"));
     setWindowTitle(tr("Piano Booster"));
-
-    Cfg::setDefaults();
+    
+    Cfg.readFile("config/default.cfg");
 
     decodeCommandLine();
 
-    if (Cfg::experimentalSwapInterval != -1)
+    if (Cfg.app_swapinterval != -1)
     {
         QGLFormat fmt;
-        fmt.setSwapInterval(Cfg::experimentalSwapInterval);
+        fmt.setSwapInterval(Cfg.app_swapinterval);
         int value = fmt.swapInterval();
         ppLogInfo("Open GL Swap Interval %d", value);
         QGLFormat::setDefaultFormat(fmt);
@@ -125,8 +125,8 @@ QtWindow::QtWindow()
 
     m_glWidget->setFocus(Qt::ActiveWindowFocusReason);
 
-    m_song->setPianoSoundPatches(m_settings->value("Keyboard/RightSound", Cfg::defaultRightPatch()).toInt() - 1,
-                                 m_settings->value("Keyboard/WrongSound", Cfg::defaultWrongPatch()).toInt() - 1, true);
+    m_song->setPianoSoundPatches(m_settings->value("Keyboard/RightSound", Cfg.defaultRightPatch()).toInt() - 1,
+                                 m_settings->value("Keyboard/WrongSound", Cfg.defaultWrongPatch()).toInt() - 1, true);
 
     QString midiInputName = m_settings->value("Midi/Input").toString();
     if (midiInputName.startsWith(tr("None")))
@@ -284,27 +284,27 @@ void QtWindow::decodeCommandLine()
         if (arg.startsWith("-"))
         {
             if (arg.startsWith("-d") || arg.startsWith("--debug"))
-                Cfg::logLevel++;
+                Cfg.log_level++;
             else if (arg.startsWith("-q") || arg.startsWith("--quick-start"))
-                Cfg::quickStart = true;
+                Cfg.app_quickstart = true;
             else if (arg.startsWith("--Xnote-length"))
-                Cfg::experimentalNoteLength = true;
+                Cfg.experimentalNoteLength = true;
             else if (arg.startsWith("--Xtick-rate")) {
                 if (validateIntegerParamWithMessage(arg)) {
-                    Cfg::tickRate = decodeIntegerParam(arg, 12);
+                    Cfg.app_tickrate = decodeIntegerParam(arg, 12);
                 }
             } else if (arg.startsWith("-l") || arg.startsWith("--log"))
-                Cfg::useLogFile = true;
+                Cfg.log_usefile = true;
             else if (arg.startsWith("--midi-input-dump"))
-                Cfg::midiInputDump = true;
+                Cfg.log_mididump = true;
 
             else if (arg.startsWith("-X1"))
-                Cfg::experimentalTempo = true;
+                Cfg.experimentalTempo = true;
             else if (arg.startsWith("-Xswap"))
-                Cfg::experimentalSwapInterval = decodeIntegerParam(arg, 100);
+                Cfg.app_swapinterval = decodeIntegerParam(arg, 100);
 
             else if (arg.startsWith("--lights"))
-                Cfg::keyboardLightsChan = 1-1;  // Channel 1 (really a zero)
+                Cfg.play_channelkbdlights = 1-1;  // Channel 1 (really a zero)
 
             else if (arg.startsWith("-h") || arg.startsWith("-?") || arg.startsWith("--help"))
             {
