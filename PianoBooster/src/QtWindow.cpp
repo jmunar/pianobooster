@@ -68,7 +68,8 @@ QtWindow::QtWindow()
     setWindowTitle(tr("Piano Booster"));
     
     // Load default configuration
-    Cfg.readFile("config/default.cfg");
+    Cfg.readFile(QApplication::applicationDirPath().toStdString()
+                 + "/config/default.cfg");
 
     decodeCommandLine();
 
