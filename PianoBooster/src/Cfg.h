@@ -117,8 +117,10 @@ public:
                 &play_rect;
     bool        app_quickstart,
                 log_mididump,
-                log_usefile;
-    CColour     marker_bar_color,
+                log_usefile,
+                play_show_note_length;
+    CColour     accuracy_bar_color,
+                marker_bar_color,
                 marker_beat_color,
                 note_color,
                 note_colordim,
@@ -129,6 +131,10 @@ public:
                 piano_good_color,
                 piano_bad_color,
                 playarea_bg_color,
+                playarea_text_color,
+                playrect_bg_color,
+                playrect_line_color,
+                playrect_border_color,
                 stave_color,
                 stave_colordim;
     int         app_silencetimeout,
@@ -154,7 +160,6 @@ public:
     int defaultRightPatch() {return 1;} // Starts at 1
 
     bool experimentalTempo;
-    bool experimentalNoteLength;
 };
 
 extern CfgCls Cfg;

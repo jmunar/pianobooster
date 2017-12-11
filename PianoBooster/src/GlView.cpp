@@ -187,7 +187,7 @@ void CGLView::drawAccurracyBar()
 
 
     glLineWidth (1);
-    CDraw::drColour (CColour(1.0, 1.0, 1.0));
+    CDraw::drColour (Cfg.accuracy_bar_color);
     glBegin(GL_LINE_LOOP);
     glVertex2f (x, y + lineWidth);
     glVertex2f (x+ width, y  + lineWidth);
@@ -219,7 +219,7 @@ void CGLView::drawDisplayText()
         return;
     }
 
-    glColor3f(1.0,1.0,1.0);
+    CDraw::drColour(Cfg.playarea_text_color);
 
     if (m_song->getPlayMode() != PB_PLAY_MODE_listen)
         renderText(30, y-4,0 ,tr("Accuracy:"), m_timeRatingFont);
@@ -251,7 +251,7 @@ void CGLView::drawBarNumber()
     //CDraw::drColour (Cfg.playarea_bg_color());
     //CDraw::drColour (Cfg.note_color);
     //glRectf(x+30+10, y-2, x + 80, y + 16);
-    glColor3f(1.0,1.0,1.0);
+    CDraw::drColour(Cfg.playarea_text_color);
     renderText(x, y, 0, tr("Bar: ") + QString::number(m_song->getBarNumber()), m_timeRatingFont);
 }
 
@@ -308,6 +308,7 @@ void CGLView::mouseMoveEvent(QMouseEvent *event)
 
 void CGLView::initializeGL()
 {
+    
     // Buffer clear color
     CColour colour = Cfg.playarea_bg_color;
     glClearColor (colour.red, colour.green, colour.blue, 0.0);

@@ -644,14 +644,13 @@ void CDraw::drawSymbol(CSymbol symbol, float x, float y, CSlot* slot)
                 float bottomY = CStavePos(PB_PART_left, -m_beatMarkerHeight).getPosY();
                 float wprev = Cfg.playrect_wprev * HORIZONTAL_SPACING_FACTOR;
                 float wpast = Cfg.playrect_wpast * HORIZONTAL_SPACING_FACTOR;
-                //glColor3f (0.7, 1.0, 0.7);
-                glColor3f (0.0, 0.0, 0.3);
+                drColour(Cfg.playrect_bg_color);
                 glRectf(x-wpast, topY, x + wprev, bottomY);
                 glLineWidth (2.0);
-                glColor3f (0.0, 0.0, 0.8);
+                drColour(Cfg.playrect_line_color);
                 oneLine(x, topY, x, bottomY );
                 glLineWidth (1.0);
-                glColor3f (0.0, 0.0, 0.6);
+                drColour(Cfg.playrect_border_color);
                 oneLine(x-wpast, topY, x-wpast, bottomY );
                 oneLine(x+wprev, topY, x+wprev, bottomY );
             }

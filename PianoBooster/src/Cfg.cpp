@@ -26,67 +26,81 @@
 */
 /*********************************************************************************/
 
-
-
-#include <iostream>
 #include "Cfg.h"
 
 CfgCls Cfg;
 
+bool lookupCColour(libconfig::Config &config, const char *path,
+                   CColour &value)
+{
+    bool exists = config.exists(path);
+    
+    if(exists)
+    {
+        value = CColour(config.lookup(path));
+    }
+    
+    return exists;
+}
+
 void CfgCls::readFile(std::string file)
 {
-        
+    
     libconfig::Config config;
 
     config.readFile(file.c_str());
     
-    app_quickstart     = config.lookup("app.quickstart");
-    app_swapinterval   = config.lookup("app.swapinterval");
-    app_silencetimeout = config.lookup("app.silencetimeout");
-    app_tickrate       = config.lookup("app.tickrate");
+    config.lookupValue("app.quickstart", app_quickstart);
+    config.lookupValue("app.swapinterval", app_swapinterval);
+    config.lookupValue("app.silencetimeout", app_silencetimeout);
+    config.lookupValue("app.tickrate", app_tickrate);
     
-    log_level    = config.lookup("log.level");
-    log_usefile  = config.lookup("log.usefile");
-    log_file     = config.lookup("log.file").c_str();
-    log_mididump = config.lookup("log.mididump");
+    config.lookupValue("log.level", log_level);
+    config.lookupValue("log.usefile", log_usefile);
+    config.lookupValue("log.file", log_file);
+    config.lookupValue("log.mididump", log_mididump);
     
-    play_channelkbdlights = config.lookup("play.channelkbdlights");
-    play_chord_mingap     = config.lookup("play.chord_mingap");
-    play_chord_maxlength  = config.lookup("play.chord_maxlength");
+    config.lookupValue("play.channelkbdlights", play_channelkbdlights);
+    config.lookupValue("play.chord_mingap", play_chord_mingap);
+    config.lookupValue("play.chord_maxlength", play_chord_maxlength);
+    config.lookupValue("play.show_note_length", play_show_note_length);
     
-    marker_bar_color     = CColour(config.lookup("style.marker_bar_color"));
-    marker_beat_color    = CColour(config.lookup("style.marker_beat_color"));
-    marker_clef2stave    = config.lookup("style.marker_clef2stave");
-    marker_timesign2clef = config.lookup("style.marker_timesign2clef");
-    marker_key2timesign  = config.lookup("style.marker_key2timesign");
-    marker_scroll2key    = config.lookup("style.marker_scroll2key");
-    note_color           = CColour(config.lookup("style.note_color"));
-    note_colordim        = CColour(config.lookup("style.note_colordim"));
-    note_good_color      = CColour(config.lookup("style.note_good_color"));
-    note_bad_color       = CColour(config.lookup("style.note_bad_color"));
-    note_unplayed_color  = CColour(config.lookup("style.note_unplayed_color"));
-    note_name_color      = CColour(config.lookup("style.note_name_color"));
-    piano_good_color     = CColour(config.lookup("style.piano_good_color"));
-    piano_bad_color      = CColour(config.lookup("style.piano_bad_color"));
-    playarea_bg_color    = CColour(config.lookup("style.playarea_bg_color"));
-    playrect_wprev       = config.lookup("style.playrect_wprev");
-    playrect_wpast       = config.lookup("style.playrect_wpast");
-    playrect_relx        = config.lookup("style.playrect_relx");
-    stave_color          = CColour(config.lookup("style.stave_color"));
-    stave_colordim       = CColour(config.lookup("style.stave_colordim"));
-    stave_gap_left       = config.lookup("style.stave_gap_left");
-    stave_gap_right      = config.lookup("style.stave_gap_right");
-    stave_thickness      = config.lookup("style.stave_thickness");
+    lookupCColour(config, "style.accuracy_bar_color", accuracy_bar_color);
+    lookupCColour(config, "style.marker_bar_color", marker_bar_color);
+    lookupCColour(config, "style.marker_beat_color", marker_beat_color);
+    config.lookupValue("style.marker_clef2stave", marker_clef2stave);
+    config.lookupValue("style.marker_timesign2clef", marker_timesign2clef);
+    config.lookupValue("style.marker_key2timesign", marker_key2timesign);
+    config.lookupValue("style.marker_scroll2key", marker_scroll2key);
+    lookupCColour(config, "style.note_color", note_color);
+    lookupCColour(config, "style.note_colordim", note_colordim);
+    lookupCColour(config, "style.note_good_color", note_good_color);
+    lookupCColour(config, "style.note_bad_color", note_bad_color);
+    lookupCColour(config, "style.note_unplayed_color", note_unplayed_color);
+    lookupCColour(config, "style.note_name_color", note_name_color);
+    lookupCColour(config, "style.piano_good_color", piano_good_color);
+    lookupCColour(config, "style.piano_bad_color", piano_bad_color);
+    lookupCColour(config, "style.playarea_bg_color", playarea_bg_color);
+    lookupCColour(config, "style.playarea_text_color", playarea_text_color);
+    config.lookupValue("style.playrect_wprev", playrect_wprev);
+    config.lookupValue("style.playrect_wpast", playrect_wpast);
+    config.lookupValue("style.playrect_relx", playrect_relx);
+    lookupCColour(config, "style.playrect_bg_color", playrect_bg_color);
+    lookupCColour(config, "style.playrect_line_color", playrect_line_color);
+    lookupCColour(config, "style.playrect_border_color", playrect_border_color);
+    lookupCColour(config, "style.stave_color", stave_color);
+    lookupCColour(config, "style.stave_colordim", stave_colordim);
+    config.lookupValue("style.stave_gap_left", stave_gap_left);
+    config.lookupValue("style.stave_gap_right", stave_gap_right);
+    config.lookupValue("style.stave_thickness", stave_thickness);
     
+    // Variables depending on explicit parameters
     this->_marker_clef     = stave_gap_left + marker_clef2stave;
     this->_marker_timesign = marker_clef + marker_timesign2clef;
     this->_marker_key      = marker_timesign + marker_key2timesign;
     this->_marker_scroll   = marker_key + marker_scroll2key;
-    this->_play_rect       = (int) (marker_scroll
-        + (app_pos_w - stave_gap_right - marker_scroll) * playrect_relx);
     
     experimentalTempo        = false;
-    experimentalNoteLength   = false;
     
 }
 
@@ -97,5 +111,5 @@ void CfgCls::setAppDimensions(int x, int y, int w, int h)
     this->_app_pos_w = w;
     this->_app_pos_h = h;
     this->_play_rect = (int) (marker_scroll
-    + (app_pos_w - stave_gap_right - marker_scroll) * playrect_relx);
+       + (app_pos_w - stave_gap_right - marker_scroll) * playrect_relx);
 }

@@ -215,7 +215,7 @@ void CNotation::setupNotationParamaters()
 
 void CNotation::calculateScoreNoteLength()
 {
-    if (!Cfg.experimentalNoteLength)
+    if (!Cfg.play_show_note_length)
         return;
 
     CSlot* slot = m_slotQueue->indexPtr(0);

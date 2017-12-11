@@ -67,6 +67,7 @@ QtWindow::QtWindow()
     setWindowIcon(QIcon(":/images/Logo32x32.png"));
     setWindowTitle(tr("Piano Booster"));
     
+    // Load default configuration
     Cfg.readFile("config/default.cfg");
 
     decodeCommandLine();
@@ -184,16 +185,14 @@ QtWindow::~QtWindow()
 void QtWindow::displayUsage()
 {
     fprintf(stderr, "Usage: pianobooster [flags] [midifile]\n");
+    fprintf(stderr, "  -c, --config-file=file  Modify configuration via file\n");
     fprintf(stderr, "  -d, --debug             Increase the debug level.\n");
-    fprintf(stderr, "  -q, --quick-start       Quick start.\n");
-    fprintf(stderr, "      --Xnote-length      Displays the note length (experimental)\n");
-    fprintf(stderr, "      --Xtick-rate=RATE   Adjust the tick rate in mSec (experimental).\n");
-    fprintf(stderr, "                          default 4 (12 windows).\n");
     fprintf(stderr, "  -h, --help              Displays this help message.\n");
-    fprintf(stderr, "  -v, --version           Displays version number and then exits.\n");
+    fprintf(stderr, "       --lights:          Turns on the keyboard lights.\n");
     fprintf(stderr, "  -l   --log              Write debug info to the \"pb.log\" log file.\n");
     fprintf(stderr, "       --midi-input-dump  Displays the midi input in hex.\n");
-    fprintf(stderr, "       --lights:          Turns on the keyboard lights.\n");
+    fprintf(stderr, "  -q, --quick-start       Quick start.\n");
+    fprintf(stderr, "  -v, --version           Displays version number and then exits.\n");
 }
 
 int QtWindow::decodeIntegerParam(QString arg, int defaultParam)
@@ -285,27 +284,20 @@ void QtWindow::decodeCommandLine()
         {
             if (arg.startsWith("-d") || arg.startsWith("--debug"))
                 Cfg.log_level++;
+            else if (arg.startsWith("-c") || arg.startsWith("--config-file"))
+            {
+                int n = arg.lastIndexOf('=');
+                if (n != -1 && (n + 1) < arg.size())
+                    Cfg.readFile(arg.mid(n+1).toStdString());
+            }
             else if (arg.startsWith("-q") || arg.startsWith("--quick-start"))
                 Cfg.app_quickstart = true;
-            else if (arg.startsWith("--Xnote-length"))
-                Cfg.experimentalNoteLength = true;
-            else if (arg.startsWith("--Xtick-rate")) {
-                if (validateIntegerParamWithMessage(arg)) {
-                    Cfg.app_tickrate = decodeIntegerParam(arg, 12);
-                }
-            } else if (arg.startsWith("-l") || arg.startsWith("--log"))
+            else if (arg.startsWith("-l") || arg.startsWith("--log"))
                 Cfg.log_usefile = true;
             else if (arg.startsWith("--midi-input-dump"))
                 Cfg.log_mididump = true;
-
-            else if (arg.startsWith("-X1"))
-                Cfg.experimentalTempo = true;
-            else if (arg.startsWith("-Xswap"))
-                Cfg.app_swapinterval = decodeIntegerParam(arg, 100);
-
             else if (arg.startsWith("--lights"))
                 Cfg.play_channelkbdlights = 1-1;  // Channel 1 (really a zero)
-
             else if (arg.startsWith("-h") || arg.startsWith("-?") || arg.startsWith("--help"))
             {
                 displayUsage();
