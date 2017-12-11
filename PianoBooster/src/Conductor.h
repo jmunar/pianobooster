@@ -104,7 +104,16 @@ public:
     void playMusic(bool start);
     bool playingMusic() {return m_playing;}
 
-    float getSpeed() {return m_tempo.getSpeed();}
+    float getSpeed()
+    {
+        return m_tempo.getSpeed();
+    }
+    
+    float getBPM()
+    {
+        return m_tempo.getBPM();
+    }
+    
     void setSpeed(float speed)
     {
         m_tempo.setSpeed(speed);

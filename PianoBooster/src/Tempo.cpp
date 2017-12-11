@@ -32,6 +32,74 @@
 int CTempo::m_cfg_followTempoAmount = 0;
 int CTempo::m_cfg_maxJumpAhead = 0;
 
+CTempo::CTempo()
+{
+    m_savedWantedChord = 0;
+    reset();
+}
+
+void CTempo::setSavedWantedChord(CChord * savedWantedChord)
+{
+    m_savedWantedChord = savedWantedChord;
+}
+
+void CTempo::reset()
+{
+    // 120 beats per minute is the default
+    setMidiTempo(static_cast<int>(( 60 * MICRO_SECOND ) / 120 ));
+    m_jumpAheadDelta = 0;
+}
+
+// Tempo, microseconds-per-MIDI-quarter-note
+void CTempo::setMidiTempo(int tempo)
+{
+    m_midiTempo = (static_cast<float>(tempo) * DEFAULT_PPQN) / CMidiFile::getPulsesPerQuarterNote();
+    ppLogWarn("Midi Tempo %f  ppqn %d %d", m_midiTempo, CMidiFile::getPulsesPerQuarterNote(), tempo);
+}
+
+float CTempo::getBPM()
+{
+    return (60000000.0 * m_userSpeed * DEFAULT_PPQN
+            / (m_midiTempo * CMidiFile::getPulsesPerQuarterNote()));
+}
+
+void CTempo::setSpeed(float speed)
+{
+    // limit the allowed speed
+    if (speed > 2.0f)
+        speed = 2.0f;
+    if (speed < 0.1f)
+        speed = 0.1f;
+    m_userSpeed = speed;
+}
+
+float CTempo::getSpeed()
+{
+    return m_userSpeed;
+}
+
+int CTempo::mSecToTicks(int mSec)
+{
+    return static_cast<int>(mSec * m_userSpeed * (100.0 * MICRO_SECOND) /m_midiTempo);
+}
+
+void CTempo::insertPlayingTicks(int ticks)
+{
+    m_jumpAheadDelta -= ticks;
+    if (m_jumpAheadDelta < CMidiFile::ppqnAdjust(-10)*SPEED_ADJUST_FACTOR)
+        m_jumpAheadDelta = CMidiFile::ppqnAdjust(-10)*SPEED_ADJUST_FACTOR;
+}
+
+void CTempo::removePlayingTicks(int ticks)
+{
+    if (m_cfg_maxJumpAhead != 0)
+        m_jumpAheadDelta = ticks;
+}
+void CTempo::clearPlayingTicks()
+{
+    m_jumpAheadDelta = 0;
+}
+
 
 void CTempo::enableFollowTempo(bool enable)
 {

@@ -103,8 +103,8 @@ void CGLView::paintGL()
     drawAccurracyBar();
     BENCHMARK(5, "drawAccurracyBar");
 
-    drawBarNumber();
-    BENCHMARK(6, "drawBarNumber");
+    drawBPMandPosition();
+    BENCHMARK(6, "drawBPMandPosition");
 
     if (m_forcefullRedraw)
         m_score->drawScore();
@@ -239,7 +239,7 @@ void CGLView::drawDisplayText()
     */
 }
 
-void CGLView::drawBarNumber()
+void CGLView::drawBPMandPosition()
 {
     if (m_forceBarRedraw == 0 || Cfg.app_quickstart)
         return;
@@ -247,12 +247,14 @@ void CGLView::drawBarNumber()
 
     float y = Cfg.app_pos_h - m_titleHeight - 34;
     float x = 30;
-
+    auto txt = tr("BPM: ") + QString::number(m_song->getBPM())
+             + tr(" Bar: ") + QString::number(m_song->getBarNumber());
+    
     //CDraw::drColour (Cfg.playarea_bg_color());
     //CDraw::drColour (Cfg.note_color);
     //glRectf(x+30+10, y-2, x + 80, y + 16);
     CDraw::drColour(Cfg.playarea_text_color);
-    renderText(x, y, 0, tr("Bar: ") + QString::number(m_song->getBarNumber()), m_timeRatingFont);
+    renderText(x, y, 0, txt, m_timeRatingFont);
 }
 
 void CGLView::resizeGL(int width, int height)

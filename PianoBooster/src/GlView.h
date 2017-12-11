@@ -65,7 +65,7 @@ private:
     void drawDisplayText();
     void drawTimeSignature();
     void drawAccurracyBar();
-    void drawBarNumber();
+    void drawBPMandPosition();
     void updateMidiTask();
 
 

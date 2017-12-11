@@ -39,68 +39,32 @@
 class CTempo
 {
 public:
-    CTempo()
-    {
-        m_savedWantedChord = 0;
-        reset();
-    }
-    void setSavedWantedChord(CChord * savedWantedChord) { m_savedWantedChord = savedWantedChord; }
-
-
-    void reset()
-    {
-        // 120 beats per minute is the default
-        setMidiTempo(static_cast<int>(( 60 * MICRO_SECOND ) / 120 ));
-        m_jumpAheadDelta = 0;
-    }
+    
+    CTempo();
+    
+    void setSavedWantedChord(CChord * savedWantedChord);
+    
+    void reset();
 
     // Tempo, microseconds-per-MIDI-quarter-note
-    void setMidiTempo(int tempo)
-    {
-        m_midiTempo = (static_cast<float>(tempo) * DEFAULT_PPQN) / CMidiFile::getPulsesPerQuarterNote();
-        ppLogWarn("Midi Tempo %f  ppqn %d %d", m_midiTempo, CMidiFile::getPulsesPerQuarterNote(), tempo);
-    }
+    void setMidiTempo(int tempo);
+    
+    // Beats per minute
+    float getBPM();
 
-    void setSpeed(float speed)
-    {
-        // limit the allowed speed
-        if (speed > 2.0f)
-            speed = 2.0f;
-        if (speed < 0.1f)
-            speed = 0.1f;
-        m_userSpeed = speed;
-    }
-    float getSpeed() {return m_userSpeed;}
+    void setSpeed(float speed);
+    float getSpeed();
 
-    int mSecToTicks(int mSec)
-    {
-        return static_cast<int>(mSec * m_userSpeed * (100.0 * MICRO_SECOND) /m_midiTempo);
-    }
+    int mSecToTicks(int mSec);
 
-    void insertPlayingTicks(int ticks)
-    {
-        m_jumpAheadDelta -= ticks;
-        if (m_jumpAheadDelta < CMidiFile::ppqnAdjust(-10)*SPEED_ADJUST_FACTOR)
-            m_jumpAheadDelta = CMidiFile::ppqnAdjust(-10)*SPEED_ADJUST_FACTOR;
-    }
-
-    void removePlayingTicks(int ticks)
-    {
-        if (m_cfg_maxJumpAhead != 0)
-            m_jumpAheadDelta = ticks;
-    }
-    void clearPlayingTicks()
-    {
-        m_jumpAheadDelta = 0;
-    }
-
+    void insertPlayingTicks(int ticks);
+    void removePlayingTicks(int ticks);
+    void clearPlayingTicks();
 
     void adjustTempo(int * ticks);
-
-
+    
     static void enableFollowTempo(bool enable);
-
-
+    
 private:
     float m_userSpeed; // controls the speed of the piece playing
     float m_midiTempo; // controls the speed of the piece playing
